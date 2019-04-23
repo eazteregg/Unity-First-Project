@@ -92,15 +92,44 @@ public class Movement : MonoBehaviour
     {
         if (hit.gameObject.tag == "wall")
         {
-            Debug.Log("Touching wall");
+            //Debug.Log("Touching wall");
 
-            if (!characterController.isGrounded && Input.GetButtonDown("Jump") && jumpCooldown <= 0.0f)
+            if (!characterController.isGrounded && Input.GetButton("Jump") && jumpCooldown <= 0.0f)
             {
-                moveDirection.y += jumpSpeed;
-                jumpCooldown = jumpCooldownMAX;
-                moveDirection.y -= gravity * Time.deltaTime;
 
-                characterController.Move(moveDirection * Time.deltaTime);
+
+                
+                //apply vertical movement
+                if (moveDirection.y > -5.0f)
+                {
+
+                    Debug.Log(moveDirection);
+                    Vector3 horizontalMovement = new Vector3(moveDirection.x, 0, moveDirection.z);
+                    Debug.Log("horizontal movement" + horizontalMovement);
+                    Vector3 horizontalMovementReflected = Vector3.Reflect(horizontalMovement, hit.normal);
+                    Debug.Log("Movement reflected" + horizontalMovementReflected);
+
+                    moveDirection = new Vector3(horizontalMovementReflected.x, moveDirection.y, horizontalMovementReflected.z);
+                    Debug.Log("Inverted moveDirection" + moveDirection);
+
+                    if (moveDirection.y <= 0.0f)
+                    {
+                        moveDirection.y = jumpSpeed;
+                    }
+                    else
+                    {
+                        moveDirection.y += jumpSpeed;
+                    }
+                    
+                    jumpCooldown = jumpCooldownMAX;
+                    moveDirection.y -= gravity * Time.deltaTime;
+
+                    characterController.Move(moveDirection * Time.deltaTime);
+                    Debug.Log("final" + moveDirection);
+                }
+                
+
+                
             }
 
         }
