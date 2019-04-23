@@ -8,7 +8,12 @@ public class Movement : MonoBehaviour
     public float speed = 6.0f;
     public float jumpSpeed = 8.0f;
     public float gravity = 20.0f;
+    public float horizontalInfluence = 1.0f;
+    public float jumpCooldownMAX = .3f;
+    private float jumpCooldown = 0.0f;
+
     private CharacterController characterController;
+    private Collider collider;
 
     private Vector3 forward;
     private Vector3 right;
@@ -18,6 +23,7 @@ public class Movement : MonoBehaviour
 
     public float horizontalTurnSpeed = 2.0f;
     public float verticalTurnSpeed = 2.0f;
+  
 
 
     // Start is called before the first frame update
@@ -25,13 +31,14 @@ public class Movement : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         cameraTransform = transform.GetChild(0);
+        collider = GetComponent<BoxCollider>();
 
         forward = transform.forward;
         right = transform.right;
 
 
-        Debug.Log(forward);
-        Debug.Log(right);
+        //Debug.Log(forward);
+        //Debug.Log(right);
     }
 
     // Update is called once per frame
@@ -45,7 +52,7 @@ public class Movement : MonoBehaviour
 
         transform.Rotate(0, h, 0);
         cameraTransform.Rotate(-v, 0, 0);
-        
+
         if (characterController.isGrounded)
         {
             float directHoriz = Input.GetAxis("Horizontal");
@@ -55,14 +62,59 @@ public class Movement : MonoBehaviour
             moveDirection.Normalize();
             moveDirection *= speed;
 
-            if (Input.GetButton("Jump"))
+            if (Input.GetButton("Jump") && jumpCooldown <= 0.0f)
             {
                 moveDirection.y = jumpSpeed;
+                jumpCooldown = jumpCooldownMAX;
             }
         }
+        if (jumpCooldown > 0.0f)
+            {
+                jumpCooldown -= 1 * Time.deltaTime;
+            }
+        
 
         moveDirection.y -= gravity * Time.deltaTime;
 
         characterController.Move(moveDirection * Time.deltaTime);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+       // Debug.Log("Touching stuff", other);
+        if (other.gameObject.tag == "wall")
+        {
+         //   Debug.Log("Touching wall", other);
+        }
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.tag == "wall")
+        {
+            Debug.Log("Touching wall");
+
+            if (!characterController.isGrounded && Input.GetButtonDown("Jump") && jumpCooldown <= 0.0f)
+            {
+                moveDirection.y += jumpSpeed;
+                jumpCooldown = jumpCooldownMAX;
+                moveDirection.y -= gravity * Time.deltaTime;
+
+                characterController.Move(moveDirection * Time.deltaTime);
+            }
+
+        }
+    }
+    void onTriggerStay(Collider other)
+    {
+
+        Debug.Log("Touching stuff");
+        if (other.gameObject.tag == "wall")
+            
+        {
+            Debug.Log("Touching Wall");
+
+           
+        }
     }
 }
