@@ -10,7 +10,9 @@ public class Movement : MonoBehaviour
     public float gravity = 20.0f;
     public float horizontalInfluence = 1.0f;
     public float jumpCooldownMAX = .3f;
+    public float maxWalljumpFallSpeed = -5.0f;
     private float jumpCooldown = 0.0f;
+
 
     private CharacterController characterController;
     private Collider collider;
@@ -100,7 +102,7 @@ public class Movement : MonoBehaviour
 
                 
                 //apply vertical movement
-                if (moveDirection.y > -5.0f)
+                if (moveDirection.y > maxWalljumpFallSpeed)
                 {
 
                     Debug.Log(moveDirection);
