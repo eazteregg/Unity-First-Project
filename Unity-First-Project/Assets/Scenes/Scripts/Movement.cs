@@ -25,7 +25,7 @@ public class Movement : MonoBehaviour
 
     public float horizontalTurnSpeed = 2.0f;
     public float verticalTurnSpeed = 2.0f;
-  
+
 
 
     // Start is called before the first frame update
@@ -91,7 +91,11 @@ public class Movement : MonoBehaviour
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
+    {   
+        if (hit.gameObject.tag == "deathbox")
+        {
+            transform.position = new Vector3(0f, 0.5f, 0f);
+        }
         if (hit.gameObject.tag == "wall")
         {
             //Debug.Log("Touching wall");
@@ -100,9 +104,10 @@ public class Movement : MonoBehaviour
             {
 
 
-                
+
                 //apply vertical movement
                 if (moveDirection.y > maxWalljumpFallSpeed)
+
                 {
 
                     Debug.Log(moveDirection);
