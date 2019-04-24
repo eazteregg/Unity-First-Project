@@ -141,16 +141,5 @@ public class Movement : MonoBehaviour
 
         }
     }
-    void onTriggerStay(Collider other)
-    {
-
-        Debug.Log("Touching stuff");
-        if (other.gameObject.tag == "wall")
-            
-        {
-            Debug.Log("Touching Wall");
-
-           
-        }
-    }
+ 
 }
